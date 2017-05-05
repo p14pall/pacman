@@ -59,12 +59,12 @@
 
             //  We need this because the assets are on github pages
             //  Remove the next 2 lines if running locally
-            this.load.baseURL = 'https://ioniodi.github.io/pacman/';
-            this.load.crossOrigin = 'anonymous';
+            this.load.baseURL = 'https://p14pall.github.io/pacman/';
+            this.load.crossOrigin = 'foteini';
 
-            this.load.image('dot', 'assets/dot.png');
+            this.load.image('kokkino', 'assets/kokkino.jpg');
             this.load.image('tiles', 'assets/pacman-tiles.png');
-            this.load.spritesheet('pacman', 'assets/pacman.png', 32, 32);
+            this.load.spritesheet('fantasma', 'assets/fantasma.jpg', 32, 32);
             this.load.tilemap('map', 'assets/pacman-map.json', null, Phaser.Tilemap.TILED_JSON);
 
             //  Needless to say, graphics (C)opyright Namco
@@ -80,7 +80,7 @@
 
             this.dots = this.add.physicsGroup();
 
-            this.map.createFromTiles(7, this.safetile, 'dot', this.layer, this.dots);
+            this.map.createFromTiles(7, this.safetile, 'kokkino', this.layer, this.dots);
 
             //  The dots will need to be offset by 6px to put them back in the middle of the grid
             this.dots.setAll('x', 6, false, false, 1);
@@ -90,7 +90,7 @@
             this.map.setCollisionByExclusion([this.safetile], true, this.layer);
 
             //  Position Pacman at grid location 14x17 (the +8 accounts for his anchor)
-            this.pacman = this.add.sprite((14 * 16) + 8, (17 * 16) + 8, 'pacman', 0);
+            this.pacman = this.add.sprite((14 * 16) + 8, (17 * 16) + 8, 'fantasma', 0);
             this.pacman.anchor.set(0.5);
             this.pacman.animations.add('munch', [0, 1, 2, 1], 20, true);
 
