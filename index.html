@@ -37,6 +37,10 @@
         
         this.score=0;
         this.scoreText='';
+	    
+	        
+	this.bonus=0;
+        this.bonusText='';
     };
     Pacman.prototype = {
         init: function () {
@@ -55,6 +59,7 @@
             this.load.image('kokkino', 'assets/kokkino.jpg');
             this.load.image('tiles', 'assets/pacman-tiles.png');
             this.load.spritesheet('fantasma', 'assets/fantasma.jpg', 25, 25);
+	    this.load.image('coin','assets/coin.jpg');
             this.load.tilemap('map', 'assets/pacman-map1.json', null, Phaser.Tilemap.TILED_JSON);
             //  Needless to say, graphics (C)opyright Namco
         },
@@ -63,10 +68,18 @@
             this.map.addTilesetImage('pacman-tiles', 'tiles');
             this.layer = this.map.createLayer('Pacman');
             this.dots = this.add.physicsGroup();
+	    this.coins = this.add.physicsGroup();
+		
             this.map.createFromTiles(7, this.safetile, 'kokkino', this.layer, this.dots);
+            this.map.createFromTiles(35, this.safetile, 'coin', this.layer, this.coins);
             //  The dots will need to be offset by 6px to put them back in the middle of the grid
             this.dots.setAll('x', 6, false, false, 1);
             this.dots.setAll('y', 6, false, false, 1);
+		
+            this.coins.setAll('x', 6, false, false, 1);
+            this.coins.setAll('y', 6, false, false, 1);
+		
+		
             //  Pacman should collide with everything except the safe tile
             this.map.setCollisionByExclusion([this.safetile], true, this.layer);
             //  Position Pacman at grid location 14x17 (the +8 accounts for his anchor)
@@ -80,7 +93,9 @@
             this.move(Phaser.LEFT);
             
             this.scoreText = game.add.text(0, 500, 'Score: 0', { fontSize: '25px Arial', fill: 'white' });
-                   
+            
+            this.bonusText = game.add.text(350, 500, 'Bonus: 0', { fontSize: '20px Arial', fill: 'green' });
+            
             lives = game.add.group();
             game.add.text(game.world.width - 340, 500, 'Lives : ', { fontSize: '25px Arial', fill: 'white' });
             
@@ -189,11 +204,24 @@
             {
                 this.dots.callAll('revive');
             }
+	eatCoin: function(pacman,coin){
+		     
+            coin.kill();
+            this.bonus+=10;
+            this.score+=10;
+            this.bonusText.text= 'Bonus: '+ this.bonus;
+            this.scoreText.text= 'Score: ' + this.bonus;
+            
+            if(this.dots.total===0)
+            {
+                this.dots.callAll('revive');
+            }
         },
         update: function () {
           
             this.physics.arcade.collide(this.pacman, this.layer);
             this.physics.arcade.overlap(this.pacman, this.dots, this.eatDot, null, this);
+	    this.physics.arcade.overlap(this.pacman, this.coins, this.eatCoin, null, this);
             this.marker.x = this.math.snapToFloor(Math.floor(this.pacman.x), this.gridsize) / this.gridsize;
             this.marker.y = this.math.snapToFloor(Math.floor(this.pacman.y), this.gridsize) / this.gridsize;
             //  Update our grid sensors
